@@ -7,14 +7,16 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "guzzlehttp/guzzle": "^7.8",
+        "openai-php/client": "^0.8.4",
         "symfony/console": "7.0.*",
         "symfony/dotenv": "7.0.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "7.0.*",
+        "symfony/http-foundation": "7.0.*",
         "symfony/runtime": "7.0.*",
-        "symfony/yaml": "7.0.*"
-    },
-    "require-dev": {
+        "symfony/yaml": "7.0.*",
+        "theodo-group/llphant": "^0.6.2"
     },
     "config": {
         "allow-plugins": {
