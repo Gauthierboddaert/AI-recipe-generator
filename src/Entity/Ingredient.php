@@ -22,9 +22,13 @@ class Ingredient implements EntityInterface
     #[ORM\ManyToMany(targetEntity: Recipe::class, mappedBy: 'ingredients')]
     private Collection $recipes;
 
+    #[ORM\ManyToMany(targetEntity: RecipeDetail::class, mappedBy: 'ingredients')]
+    private Collection $recipeDetails;
+
     public function __construct()
     {
         $this->recipes = new ArrayCollection();
+        $this->recipeDetails = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -66,6 +70,33 @@ class Ingredient implements EntityInterface
     {
         if ($this->recipes->removeElement($recipe)) {
             $recipe->removeIngredient($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RecipeDetail>
+     */
+    public function getRecipeDetails(): Collection
+    {
+        return $this->recipeDetails;
+    }
+
+    public function addRecipeDetail(RecipeDetail $recipeDetail): static
+    {
+        if (!$this->recipeDetails->contains($recipeDetail)) {
+            $this->recipeDetails->add($recipeDetail);
+            $recipeDetail->addIngredient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecipeDetail(RecipeDetail $recipeDetail): static
+    {
+        if ($this->recipeDetails->removeElement($recipeDetail)) {
+            $recipeDetail->removeIngredient($this);
         }
 
         return $this;

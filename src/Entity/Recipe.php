@@ -32,9 +32,11 @@ class Recipe implements EntityInterface
         return $this->stateIngredientIsSet;
     }
 
-    public function setStatusEnum(StatusEnum $statusEnum): void
+    public function setStatusEnum(StatusEnum $statusEnum): self
     {
         $this->stateIngredientIsSet = $statusEnum;
+
+        return $this;
     }
 
     #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'recipes')]

@@ -5,6 +5,7 @@ namespace App\Factory;
 use App\Entity\Contract\EntityInterface;
 use App\Entity\Ingredient;
 use App\Entity\Recipe;
+use App\Enum\StatusEnum;
 
 class RecipeFactory
 {
@@ -12,6 +13,7 @@ class RecipeFactory
     {
         return (new Recipe())
             ->setName($name)
-            ->setDescription($description);
+            ->setDescription($description)
+            ->setStatusEnum(StatusEnum::NEW);
     }
 }

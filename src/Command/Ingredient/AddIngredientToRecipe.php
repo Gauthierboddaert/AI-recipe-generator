@@ -4,6 +4,7 @@ namespace App\Command\Ingredient;
 
 use App\Enum\ImporterEnum;
 use App\Service\Importer\ImporterManager;
+use App\Service\IngredientManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -16,7 +17,8 @@ class AddIngredientToRecipe extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        ?string                          $name = null
+        private IngredientManager               $ingredientManager,
+        ?string                                 $name = null
     )
     {
         parent::__construct($name);
@@ -26,7 +28,7 @@ class AddIngredientToRecipe extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $io->title('Set ingredients to recipe');
-
+        $this->ingredientManager->setIngredientsToRecipeWithStateNew();
         return Command::SUCCESS;
     }
 
