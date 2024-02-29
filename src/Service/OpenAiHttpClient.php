@@ -7,7 +7,7 @@ use LLPhant\Chat\FunctionInfo\FunctionInfo;
 use LLPhant\Chat\OpenAIChat;
 use LLPhant\OpenAIConfig;
 
-readonly class OpenAiHttp
+readonly class OpenAiHttpClient
 {
 
     public function __construct(

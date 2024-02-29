@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 readonly class RecipeManager implements GeneratorRecipeInterface
 {
     public function __construct(
-        private OpenAiHttp                      $openAiHttp,
+        private OpenAiHttpClient                $openAiHttp,
         private readonly EntityManagerInterface $entityManager,
     )
     {
@@ -36,7 +36,7 @@ readonly class RecipeManager implements GeneratorRecipeInterface
     public function generateRandomRecipe(DifficultyEnum $difficultyEnum): Recipe
     {
         $prompt = PrompDtoFactory::create(
-            prompt: 'Je veux que tu me donnes un nom de recette de difficulté ' . $difficultyEnum->value . 'et  je veux une recette différente de la liste de recette suivante : (chaque recette est séparée par un ;)' . $this->getRecipesName(),
+            prompt: 'Je veux que tu me donnes un nom de recette qui existe selon de grand chef de cuisine et de difficulté ' . $difficultyEnum->value . 'et  je veux une recette différente de la liste de recette suivante : (chaque recette est séparée par un ;)' . $this->getRecipesName(),
             message: 'donne moi un nom de recette, je veux uniquement un nom de recette, rien d autre'
         );
 
@@ -50,13 +50,16 @@ readonly class RecipeManager implements GeneratorRecipeInterface
     {
         $recipeName = $this->openAiHttp->request($dto);
 
-        return $this->createRecipe($recipeName, $this->getDescription($recipeName));
+        return $this->createRecipe(
+            name: $recipeName,
+            description: $this->getDescription($recipeName)
+        );
     }
 
     private function getDescription(string $name): string
     {
         $prompt = PrompDtoFactory::create(
-            'Je veux que tu me donnes une description pour la recette ' . $name,
+            'Je veux que tu me donnes une description (max 500 mots) pour la recette ' . $name,
             'donne moi une description original pour la recette ' . $name
         );
 
@@ -66,6 +69,10 @@ readonly class RecipeManager implements GeneratorRecipeInterface
     private function getRecipesName(): string
     {
         $recipes = $this->entityManager->getRepository(Recipe::class)->findAll();
+
+        if (empty($recipes)) {
+            return '';
+        }
 
         return implode(';', array_map(fn(Recipe $recipe) => $recipe->getName(), $recipes));
     }

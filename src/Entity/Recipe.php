@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Entity\Contract\EntityInterface;
+use App\Enum\StatusEnum;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
@@ -19,8 +21,21 @@ class Recipe implements EntityInterface
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT, length: 1000)]
     private ?string $description = null;
+
+    #[ORM\Column(type: Types::STRING, enumType: StatusEnum::class, options: ['default' => StatusEnum::NEW])]
+    private StatusEnum $stateIngredientIsSet;
+
+    public function getStatusEnum(): StatusEnum
+    {
+        return $this->stateIngredientIsSet;
+    }
+
+    public function setStatusEnum(StatusEnum $statusEnum): void
+    {
+        $this->stateIngredientIsSet = $statusEnum;
+    }
 
     #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'recipes')]
     private Collection $ingredients;
