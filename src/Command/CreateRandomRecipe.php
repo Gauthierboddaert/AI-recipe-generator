@@ -37,7 +37,7 @@ class CreateRandomRecipe extends Command
             $io->title('Creating random recipe');
             $recipe = $this->generatorRecipe->generateRandomRecipe(DifficultyEnum::EASY);
             $io->success('Random recipe created : ' . $recipe->getName() . ', sleeping for 40 seconds...');
-            sleep(40);
+            sleep(20);
             $io->info('ready to create another random recipe!');
         }
 

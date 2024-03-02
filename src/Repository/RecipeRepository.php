@@ -22,14 +22,14 @@ class RecipeRepository extends ServiceEntityRepository
         parent::__construct($registry, Recipe::class);
     }
 
-    public function getRecipesWithoutIngredients(): array
+    public function getRecipesWithNewsStatus(): array
     {
         return $this->createQueryBuilder('r')
-            ->leftJoin('r.ingredients', 'i')
-            ->addSelect('i')
             ->andWhere('r.stateIngredientIsSet = :status')
             ->setParameter('status', StatusEnum::NEW)
             ->getQuery()
             ->getResult();
     }
+
+
 }

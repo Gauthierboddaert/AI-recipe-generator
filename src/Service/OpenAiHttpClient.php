@@ -34,6 +34,7 @@ readonly class OpenAiHttpClient
         $config = new OpenAIConfig();
         $config->apiKey = ($this->getApiKey());
         $config->model = 'gpt-3.5-turbo';
+        //$config->model = 'dall-e-3';
         //$config->model = 'text-embedding-3-small';
         return new OpenAIChat($config);
     }

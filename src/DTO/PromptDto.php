@@ -6,6 +6,7 @@ class PromptDto
     public function __construct(
         public readonly string $prompt,
         public readonly string $systemMessage,
+        public readonly array $options = [],
     )
     {
     }

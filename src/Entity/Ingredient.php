@@ -7,6 +7,7 @@ use App\Repository\IngredientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
 class Ingredient implements EntityInterface
@@ -17,17 +18,14 @@ class Ingredient implements EntityInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['recipe:read'])]
     private ?string $name = null;
 
-    #[ORM\ManyToMany(targetEntity: Recipe::class, mappedBy: 'ingredients')]
-    private Collection $recipes;
-
-    #[ORM\ManyToMany(targetEntity: RecipeDetail::class, mappedBy: 'ingredients')]
+    #[ORM\OneToMany(targetEntity: RecipeDetail::class, mappedBy: 'ingredient')]
     private Collection $recipeDetails;
 
     public function __construct()
     {
-        $this->recipes = new ArrayCollection();
         $this->recipeDetails = new ArrayCollection();
     }
 
@@ -49,33 +47,6 @@ class Ingredient implements EntityInterface
     }
 
     /**
-     * @return Collection<int, Recipe>
-     */
-    public function getRecipes(): Collection
-    {
-        return $this->recipes;
-    }
-
-    public function addRecipe(Recipe $recipe): static
-    {
-        if (!$this->recipes->contains($recipe)) {
-            $this->recipes->add($recipe);
-            $recipe->addIngredient($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRecipe(Recipe $recipe): static
-    {
-        if ($this->recipes->removeElement($recipe)) {
-            $recipe->removeIngredient($this);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, RecipeDetail>
      */
     public function getRecipeDetails(): Collection
@@ -87,7 +58,7 @@ class Ingredient implements EntityInterface
     {
         if (!$this->recipeDetails->contains($recipeDetail)) {
             $this->recipeDetails->add($recipeDetail);
-            $recipeDetail->addIngredient($this);
+            $recipeDetail->setIngredient($this);
         }
 
         return $this;
@@ -96,7 +67,10 @@ class Ingredient implements EntityInterface
     public function removeRecipeDetail(RecipeDetail $recipeDetail): static
     {
         if ($this->recipeDetails->removeElement($recipeDetail)) {
-            $recipeDetail->removeIngredient($this);
+            // set the owning side to null (unless already changed)
+            if ($recipeDetail->getIngredient() === $this) {
+                $recipeDetail->setIngredient(null);
+            }
         }
 
         return $this;

@@ -21,28 +21,21 @@ class IngredientRepository extends ServiceEntityRepository
         parent::__construct($registry, Ingredient::class);
     }
 
-    //    /**
-    //     * @return Ingredient[] Returns an array of Ingredient objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('i')
-    //            ->andWhere('i.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('i.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findIngredientLikeName(string $name): array
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.name LIKE :name')
+            ->setParameter('name', $name . '%')
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Ingredient
-    //    {
-    //        return $this->createQueryBuilder('i')
-    //            ->andWhere('i.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findSomesRandomIngredients(int $limit): array
+    {
+        return $this->createQueryBuilder('i')
+            ->setMaxResults($limit)
+            ->orderBy('RAND()')
+            ->getQuery()
+            ->getResult();
+    }
 }
